@@ -15,8 +15,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:sessionizer.open",
-    "onCommand:sessionizer.openInPlace"
+    "onCommand:sessionizer.open"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -24,10 +23,6 @@
       {
         "command": "sessionizer.open",
         "title": "Sessionizer: Open"
-      },
-      {
-        "command": "sessionizer.openInPlace",
-        "title": "Sessionizer: Open In Place"
       }
     ],
     "configuration": {

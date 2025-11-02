@@ -21,7 +21,6 @@ first, specify the `sessionizer.sessionRoots` setting, which is an array of the 
 Then, open the command palette (cmd+shift+p) and run any one of the following commands:
 
 - `Sessionizer: Open` (Will open the directory using the `code` command)
-- `Sessionizer: Open In Place` (Will open the directory using the `code` command with the `-r` flag)
 
 You will be prompted to select a directory from any one of the roots specified.
 

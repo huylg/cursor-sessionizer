@@ -2,26 +2,9 @@ import { window } from 'vscode'
 import * as cp from 'child_process'
 import { getConfig } from './config'
 
-const camelCaseToWords = (s: string) => {
-  const result = s.replace(/([A-Z])/g, ' $1')
-  return result.charAt(0).toUpperCase() + result.slice(1)
-}
-
 const isDefined = <T>(some: T | undefined): some is T => !!some
 
-type Action = 'open' | 'openInPlace' | 'openInNewWindow'
-
-const actionArgs: Record<Action, string> = {
-  open: '',
-  openInPlace: '-r',
-  openInNewWindow: '-n',
-}
-
-type Args = {
-  action: Action
-}
-
-export async function showSessionPicker(args: Args) {
+export async function showSessionPicker() {
   const config = getConfig()
   if (!config.valid) {
     window.showQuickPick([], {
@@ -60,15 +43,13 @@ export async function showSessionPicker(args: Args) {
         window.showErrorMessage('error: ' + err || stderr)
         return
       }
-      const actionTitle = camelCaseToWords(args.action)
       const result = await window.showQuickPick(sessions, {
-        placeHolder: `Select a project to ${actionTitle}`,
-        // TODO: toggle with a setting
-        title: `VS Code Sessionizer - ${actionTitle}`,
+        placeHolder: `Select a project`,
+        title: `Sessionizer`,
       })
       if (result) {
         cp.exec(
-          `code ${result.path} ${actionArgs[args.action]}`,
+          `cursor -n ${result.path}`,
           (err, _, stderr) => {
             if (err || stderr) {
               window.showErrorMessage('error: ' + err || stderr)

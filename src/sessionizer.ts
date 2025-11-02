@@ -45,7 +45,6 @@ export async function showSessionPicker() {
       }
       const result = await window.showQuickPick(sessions, {
         placeHolder: `Select a project`,
-        title: `Sessionizer`,
       })
       if (result) {
         cp.exec(

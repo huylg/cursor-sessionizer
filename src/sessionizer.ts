@@ -1,4 +1,4 @@
-import { window } from 'vscode'
+import { window, commands, Uri } from 'vscode'
 import * as cp from 'child_process'
 import { getConfig } from './config'
 
@@ -47,14 +47,12 @@ export async function showSessionPicker() {
         placeHolder: `Select a project`,
       })
       if (result) {
-        cp.exec(
-          `cursor -n ${result.path}`,
-          (err, _, stderr) => {
-            if (err || stderr) {
-              window.showErrorMessage('error: ' + err || stderr)
-            }
-          }
-        )
+        try {
+          const uri = Uri.file(result.path)
+          await commands.executeCommand('vscode.openFolder', uri, true)
+        } catch (err) {
+          window.showErrorMessage('error: ' + (err instanceof Error ? err.message : String(err)))
+        }
       }
     }
   )

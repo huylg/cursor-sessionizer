@@ -1,8 +1,5 @@
-import { window, commands, Uri } from 'vscode'
-import * as cp from 'child_process'
+import { window, commands, Uri, workspace, FileType } from 'vscode'
 import { getConfig } from './config'
-
-const isDefined = <T>(some: T | undefined): some is T => !!some
 
 export async function showSessionPicker() {
   const config = getConfig()
@@ -21,39 +18,38 @@ export async function showSessionPicker() {
     })
     return
   }
-  cp.exec(
-    `find ${sessionRoots.join(' ')} -mindepth 1 -maxdepth 1 -type d`,
-    async (err, stdout, stderr) => {
-      const sessions = stdout
-        .split(/\r?\n/)
-        .map((sessionPath) => {
+  try {
+    const allSessions: Array<{ path: string; label: string }> = []
+    
+    for (const root of sessionRoots) {
+      const rootUri = Uri.file(root.replace(/\/\*$/, ''))
+      const entries = await workspace.fs.readDirectory(rootUri)
+      
+      for (const [name, type] of entries) {
+        if (type === FileType.Directory) {
+          const sessionPath = `${rootUri.fsPath}/${name}`
           const pathArr = sessionPath.split('/')
           const session = pathArr.at(-1)
           const parent = pathArr.at(-2)
-          if (!session) return
-          return {
-            path: sessionPath,
-            label: `${parent ? `${parent}/` : ''}${session}`,
-            // TODO: toggle with a setting
-            // detail: sessionPath,
+          if (session) {
+            allSessions.push({
+              path: sessionPath,
+              label: `${parent ? `${parent}/` : ''}${session}`,
+            })
           }
-        })
-        .filter(isDefined)
-      if (err || stderr) {
-        window.showErrorMessage('error: ' + err || stderr)
-        return
-      }
-      const result = await window.showQuickPick(sessions, {
-        placeHolder: `Select a project`,
-      })
-      if (result) {
-        try {
-          const uri = Uri.file(result.path)
-          await commands.executeCommand('vscode.openFolder', uri, true)
-        } catch (err) {
-          window.showErrorMessage('error: ' + (err instanceof Error ? err.message : String(err)))
-        }
       }
     }
-  )
+    }
+    
+    const result = await window.showQuickPick(allSessions, {
+      placeHolder: `Select a project`,
+    })
+    
+    if (result) {
+      const uri = Uri.file(result.path)
+      await commands.executeCommand('vscode.openFolder', uri, true)
+    }
+  } catch (err) {
+    window.showErrorMessage('error: ' + (err instanceof Error ? err.message : String(err)))
+  }
 }

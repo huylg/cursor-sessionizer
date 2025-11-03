@@ -1,5 +1,6 @@
-import { ExtensionContext, window, commands, Uri, workspace, FileType } from 'vscode'
+import { ExtensionContext, window, commands, Uri } from 'vscode'
 import { getConfig } from './config'
+import { glob } from 'glob'
 
 export function activate(context: ExtensionContext) {
   context.subscriptions.push(
@@ -13,27 +14,12 @@ export function activate(context: ExtensionContext) {
       }
       const sessionRoots = config.values.sessionRoots
       try {
-        const allSessions: Array<{ path: string; label: string }> = []
-
-        for (const root of sessionRoots) {
-          const rootUri = Uri.file(root.replace(/\/\*$/, ''))
-          const entries = await workspace.fs.readDirectory(rootUri)
-
-          for (const [name, type] of entries) {
-            if (type === FileType.Directory) {
-              const sessionPath = `${rootUri.fsPath}/${name}`
-              const pathArr = sessionPath.split('/')
-              const session = pathArr.at(-1)
-              const parent = pathArr.at(-2)
-              if (session) {
-                allSessions.push({
-                  path: sessionPath,
-                  label: `${parent ? `${parent}/` : ''}${session}`,
-                })
-              }
-            }
-          }
-        }
+        
+        const matches = await Promise.all(sessionRoots.map((root) => glob(root)))
+        const allSessions: Array<{ path: string; label: string }> = matches.flat().map((path) => ({
+          path,
+          label: path,
+        }))
 
         const result = await window.showQuickPick(allSessions, {
           placeHolder: `Select a project`,

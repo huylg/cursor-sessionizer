@@ -12,14 +12,6 @@ export function activate(context: ExtensionContext) {
         return
       }
       const sessionRoots = config.values.sessionRoots
-      if (sessionRoots.length === 0) {
-        const error =
-          'No session roots. Please specify using the sessionizer.sessionRoots setting.'
-        window.showQuickPick([], {
-          placeHolder: error,
-        })
-        return
-      }
       try {
         const allSessions: Array<{ path: string; label: string }> = []
 

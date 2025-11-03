@@ -25,13 +25,3 @@ Then, open the command palette (cmd+shift+p) and run any one of the following co
 You will be prompted to select a directory from any one of the roots specified.
 
 It is recommended to [create a keybinding](https://code.visualstudio.com/docs/getstarted/keybindings) (for example, cmd+shift+s) to the command.
-
-## Notes
-
-The `code` cli command needs to be installed on the system. Run the `Shell Command: Install 'code' command in PATH` VS Code command if you haven't yet.
-
-Will not work on Windows, as it's dependent on the `find` Unix command.
-
-## Credits
-
-A port of [ThePrimeagen's tmux-sessionizer](https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer) to VS Code.

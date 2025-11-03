@@ -1,11 +1,12 @@
 {
-  "name": "vscode-sessionizer",
+  "name": "cursor-sessionizer",
   "displayName": "VS Code Sessionizer",
   "description": "Fuzzy find and open directories",
   "publisher": "omercohen",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/omerchn/vscode-sessionizer"
+    "url": "https://github.com/huy.ly/cursor-sessionizer"
   },
   "version": "1.0.9",
   "engines": {
